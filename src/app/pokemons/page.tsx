@@ -122,7 +122,6 @@ export default function Pokemons() {
        className='bg-zinc-50 placeholder-zinc-700'
          type="text" 
          placeholder='pesquise seu pokemon'
-         value={findPokemon}
          onChange={e => setFindPokemon(e.target.value)} />
       <button onClick={()=>handleSearchPokemons(findPokemon)}>Search</button>
 
