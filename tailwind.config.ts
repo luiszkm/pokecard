@@ -6,7 +6,7 @@ module.exports = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   theme: {
     container: {
       center: true,
@@ -16,6 +16,35 @@ module.exports = {
       },
     },
     extend: {
+      colors: {
+        fire: "#FF0000",
+        water: "#0000FF",
+        grass: "#00FF00",
+        electric: "#FFFF00",
+        ice: "#00FFFF",
+        fighting: "#FF00FF",
+        poison: "#800080",
+        ground: "#808000",
+        flying: "#008080",
+        psychic: "#FFA500",
+        bug: "#A52A2A",
+        rock: "#808080",
+        ghost: "#000080",
+        dark: "#000000",
+        dragon: "#800000",
+        steel: "#C0C0C0",
+        fairy: "#FFC0CB",
+        normal: "#FFFFFF",
+        shadow: "#FFFFFF",
+        unknown: "#FFFFFF",
+      },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+      },
+      height :{
+        card: "480px",
+      },
+
       keyframes: {
         "accordion-down": {
           from: { height: 0 },
