@@ -1,10 +1,10 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import { PokemonData } from '@/@types/pokeapi'
 import { EvolutionChain } from '@/@types/evolution'
 import { Card } from '@/components/card'
-import { pokemonsTypes } from '@/utils/types'
-import { fetchPokemonPagination } from '@/utils/paginationPokemon'
+
 
 type PokemonsProps = {
   id: number
