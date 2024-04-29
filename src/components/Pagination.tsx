@@ -48,7 +48,9 @@ export function Pagination({ onPageChange }: PaginationProps) {
       <button onClick={() => handlePagination(1)}>
         <RiArrowLeftDoubleLine />
       </button>
-      <button onClick={() =>handlePagination(currentPage - 1)}>
+      <button onClick={() =>handlePagination(
+        currentPage === 1 ? 1 : currentPage - 1
+      )}>
         <RiArrowLeftSLine />
       </button>
      
@@ -66,7 +68,9 @@ export function Pagination({ onPageChange }: PaginationProps) {
         </button>
       ))}
        <button>{currentPage === 15 ? "" : "..."}</button>
-      <button onClick={() => handlePagination(currentPage + 1)}>
+      <button onClick={() => handlePagination(
+        currentPage === 1 ? 1 : currentPage
+      )}>
         <RiArrowRightSLine />
       </button>
       <button onClick={() => handlePagination(totalPages.length)}>

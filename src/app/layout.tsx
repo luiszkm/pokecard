@@ -1,7 +1,8 @@
-import { Menu } from 'lucide-react'
+import { MenuBar } from '@/components/MenuBar'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Image from 'next/image'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,9 +19,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <header className="w-full bg-black h-64"></header>
-        <div >
-        <Menu />
+        <header className="w-full bg-black h-64 flex items-center justify-center">
+          <Image src="/images/pikaso_reimagine_plain-blank-A-red-and-white-spherical-Pokeball-wit.png"
+          width={400}
+          height={400}
+           alt="pokeball" />
+        </header>
+        <div className='flex items-start gap-8' >
+          <MenuBar />
           {children}
         </div>
         <footer></footer>

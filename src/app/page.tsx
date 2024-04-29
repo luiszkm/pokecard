@@ -34,6 +34,7 @@ export default function Pokemons() {
   const [findPokemon, setFindPokemon] = useState('22')
   const [pokemonPaginated, setPokemonPaginated] = useState<PokemonsProps[]>([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
 
   async function handleSearchPokemons(params: string = '1') {
    
@@ -46,6 +47,7 @@ export default function Pokemons() {
     var pokemonList = []
     for (let i = pagRendered; i <= paginetd; i++) {
         try {
+          setIsLoading(true)
           const data = await fetch(`${process.env.POKE_API}/${i}`,{
             next: {
               revalidate: 60 * 60 * 24 * 30,
@@ -77,7 +79,7 @@ export default function Pokemons() {
         }
     }
     setPokemonPaginated(pokemonList)
-    console.log("finalizou");
+    setIsLoading(false)
     
   }
 
@@ -179,6 +181,7 @@ export default function Pokemons() {
         {pokemonPaginated &&
           pokemonPaginated.map(pokemon => (
             <Card
+              isLoading={isLoading}
               key={`${pokemon.image}`}
               id={pokemon.id}
               image={pokemon.image}
