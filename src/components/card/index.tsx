@@ -51,7 +51,7 @@ export function Card({
   experience,
   pokemonAbilities,
   pokemonType
-}: CardProps) {
+}: Readonly<CardProps>) {
   const types = pokemonType?.map(item => item.type.name)  
   const typesFiltered = types?.map(i => {
     return pokemonsTypes?.filter(item => item.typeName === i)
@@ -80,7 +80,7 @@ export function Card({
               typesFiltered.map(item => {
                 const typeprops = item.map(item => item)
                 const types = typeprops[0]
-                return <types.icon key={item} title={types.typeName} />
+                return <types.icon key={types.typeName} title={types.typeName} />
               })}
           </div>
         </div>

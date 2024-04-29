@@ -1,3 +1,4 @@
+import { Menu } from 'lucide-react'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -19,7 +20,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <header className="w-full bg-black h-64"></header>
         <div >
-          <aside className='w-56 bg-zinc-500 h-full'></aside>
+        <Menu />
           {children}
         </div>
         <footer></footer>
