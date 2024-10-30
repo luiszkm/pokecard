@@ -119,6 +119,10 @@ export interface PokemonData {
   moves: Move[];
   name: string;
   order: number;
+  evolution_chain :{
+    name: string;
+    url: string;
+  }
   past_types: any[]; // Defina os campos específicos deste objeto, se houver
   species: Species;
   sprites: Sprites;
@@ -128,4 +132,31 @@ export interface PokemonData {
   weight: number;
 }
 
+export interface Pokemontypes {
+  damage_relations : {}
+  game_indices : [{}]
+  generation : {}
+  id : number
+  move_damage_class : {}
+  moves : [{}]
+  name : string
+  names : [{}]
+  post_damage_relations : [{}]
+  pokemon : [pokemonsType], length: number
+                                        
+}
 
+type pokemonsType = {
+pokemon:{
+  name: string;
+  url: string;
+}
+}
+
+
+export interface PokemonPaginated {
+  count: number
+  next: string
+  previous: string
+  results: [{name: string, url: string}]
+}
