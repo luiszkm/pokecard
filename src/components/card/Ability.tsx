@@ -19,25 +19,34 @@ type PokemonAbilities = {
 }
 export function Ability({ abilities }: Abilities) {
   const [ability, setAbility] = useState <AbilityProps[]>([] as AbilityProps[])
+  function isDuplicate(newAbility: AbilityProps, abilities: AbilityProps[]): boolean {
+    return abilities.some(ability => ability.abilityName === newAbility.abilityName);
+  }
+  
   useEffect(() => {
+    setAbility([]);
     abilities?.forEach(item => {
-      setAbility([])
-      fetchPokemonAbilities(item.ability.url)
-    })
+      fetchPokemonAbilities(item.ability.url);
+    });
+  
     async function fetchPokemonAbilities(url: string) {
-      const data = await fetch(url)
-      const response: Ability_type = await data.json()
+      const data = await fetch(url);
+      const response: Ability_type = await data.json();
+      
       const pokemonAbilities: AbilityProps = {
         abilityName: response.name,
-        effect: response.effect_entries.find(item => item.language.name === 'en')
-          ?.effect,
-        short_effect: response.effect_entries.find(
-          item => item.language.name === 'en'
-        )?.short_effect
-      }
-      setAbility(prevStat =>[...prevStat, pokemonAbilities] )
+        effect: response.effect_entries.find(item => item.language.name === 'en')?.effect,
+        short_effect: response.effect_entries.find(item => item.language.name === 'en')?.short_effect
+      };
+          
+      setAbility(prevStat => {
+        if (!isDuplicate(pokemonAbilities, prevStat)) {
+          return [...prevStat, pokemonAbilities];
+        }
+        return prevStat;
+      });
     }
-  },[])
+  }, []);
   return (
     <div className="flex flex-wrap items-center gap-3">
       {ability &&

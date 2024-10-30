@@ -16,19 +16,11 @@ type PokemonsProps = {
   weight: number
   stats: PokemonData['stats']
   experience: number
-  pokemonType: PokemonData['types']
+  pokemonType: string[]
   chainEvolutions: evolutionProps[]
-  weakness: weaknessProps[]
 }
 
-type weaknessProps = {
-  double_damage_from: string[]
-  double_damage_to: string[]
-  half_damage_from: string[]
-  half_damage_to: string[]
-  no_damage_from: string[]
-  no_damage_to: string[]
-}
+
 
 type evolutionProps = {
   name: string
@@ -47,14 +39,10 @@ export default function PokemonDetails() {
     const response: PokemonData = await data.json()
     const chainEvolution =
       (await handleSearchPokemonEvolution(response.name)) || []
-      let weakness : weaknessProps[] = []
-    response.types.forEach(async(type) => {
-       weakness.push(await GetWeakness(type.type.url))
-      
-    })
-    console.log(weakness);
-    
 
+    const typesNames = response.types.map(item => item.type.name)
+    console.log(typesNames);
+    
     const pokemon: PokemonsProps = {
       id: response.id,
       name: response.name,
@@ -65,9 +53,8 @@ export default function PokemonDetails() {
       weight: response.weight,
       stats: response.stats,
       experience: response.base_experience,
-      pokemonType: response.types,
+      pokemonType: typesNames,
       chainEvolutions: chainEvolution,
-      weakness: weakness
     }
     setPokemon(pokemon)
   }
@@ -127,17 +114,7 @@ export default function PokemonDetails() {
       console.log(error)
     }
   }
-  async function GetWeakness(url: string) {
-    const data = await fetch(url, {
-      next: {
-        revalidate: 60 * 60 * 24 * 30 * 7,
-        tags: ['pokemon-weakness']
-      }
-    })
-    const response = await data.json()
 
-    return response.damage_relations
-  }
   useEffect(() => {
     handleSearchPokemons()
   }, [])
@@ -156,9 +133,7 @@ export default function PokemonDetails() {
         weight={pokemon.weight}
         stats={pokemon.stats}
         pokemonAbilities={pokemon.abilities}
-        pokemonType={pokemon.pokemonType}
-        pokemonWeakness={pokemon.weakness}
-       
+        pokemonType={pokemon.pokemonType}       
       />
     </main>
   )

@@ -4,7 +4,8 @@ import { pokemonsTypes } from '@/utils/types'
 import { TbArrowBigUpLine, TbLineHeight } from 'react-icons/tb'
 import { GiWeight } from 'react-icons/gi'
 import { StatusBar } from './StatusBar'
-import { Weaknesses } from './Weaknesses'
+import { WeaknessesPokemonType } from './WeaknessesPokemonType'
+import { GetTypeIcons } from '../GetTypeIcons'
 
 type StatsProps = {
   base_stat: number
@@ -49,8 +50,7 @@ type CardProps = {
   height: number
   stats: StatsProps[]
   pokemonAbilities: PokemonAbilities[]
-  pokemonType: PokemonTypes[]
-  pokemonWeakness: weaknessProps[]
+  pokemonType: string[]
 }
 
 export function Details({
@@ -65,11 +65,10 @@ export function Details({
   experience,
   pokemonAbilities,
   pokemonType,
-  
+
   isLoading
 }: Readonly<CardProps>) {
-  const types = pokemonType?.map(item => item.type.name)
-  const typesFiltered = types?.map(i => {
+  const typesFiltered = pokemonType?.map(i => {
     return pokemonsTypes?.filter(item => item.typeName === i)
   })
   const bgColor = `${
@@ -87,7 +86,7 @@ export function Details({
       : bgcolor_secondary
 
   const pokemonImage = image === null || image === '' ? secondImage : image
-  
+
   if (evolutions === undefined) evolutions = []
   const pokemonChainEvolution = evolutions.filter(i => i.name !== name)
 
@@ -105,14 +104,7 @@ export function Details({
             <AvatarEvolution evolution={''} />
             <h2>{name}</h2>
             <div className="flex items-center">
-              {typesFiltered &&
-                typesFiltered.map(item => {
-                  const typeprops = item.map(item => item)
-                  const types = typeprops[0]
-                  return (
-                    <types.icon key={types.typeName} title={types.typeName} />
-                  )
-                })}
+              <GetTypeIcons types={pokemonType} />
             </div>
           </div>
           <img
@@ -151,25 +143,27 @@ export function Details({
             </ul>
           </div>
         </div>
-        <div>
+        <div className="flex flex-col items-center justify-between py-4">
           <Ability abilities={pokemonAbilities} />
+          <WeaknessesPokemonType types={pokemonType} />
         </div>
         <div>
-        {pokemonChainEvolution &&
-          pokemonChainEvolution.map((item, index) => {
-            return (
-              <a href={`/pokemon/${item.name}`}
-              className="flex-col gap-3" 
-              key={index}>
-                <span className="m-2">{item.name}</span>
-                <img src={item.imgs[1]} alt="" />
-              </a>
-            )
-          })}
+          {pokemonChainEvolution &&
+            pokemonChainEvolution.map((item, index) => {
+              return (
+                <a
+                  href={`/pokemon/${item.name}`}
+                  className="flex-col gap-3"
+                  key={index}
+                >
+                  <span className="m-2">{item.name}</span>
+                  <img src={item.imgs[1]} alt="" />
+                </a>
+              )
+            })}
         </div>
-       
-       
       </div>
+
       <span className="absolute bottom-0 text-xs right-10">#{id}</span>
     </div>
   )

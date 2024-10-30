@@ -93,7 +93,7 @@ export function Card({
     <a href={`/pokemon/${name}`}>   
      <div
       className={twMerge(
-        `w-full max-w-xs h-card rounded-3xl relative  p-4 flex items-center justify-center flex-co`
+        `w-full max-w-xs h-card rounded-3xl relative  p-4 flex items-center justify-center animate-rotate-y animate-once animate-ease-in-out`
       )}
       style={{
         background: `linear-gradient( ${bgColor}, ${bgcolor_secondary})`

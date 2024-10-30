@@ -121,15 +121,4 @@ export const pokemonsTypes: PokemonTypeProps[] = [
     color: '#db2777',
     icon: GiFairyWand
   }, 
-  {
-    typeName: 'unknown',
-    color: '#cbd5e1',
-    icon: BsRecordCircleFill
-  }, 
-  {
-    typeName: 'shadow',
-    color: '#1f2937',
-    icon: BsRecordCircleFill
-  },
-
 ]

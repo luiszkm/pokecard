@@ -24,14 +24,14 @@ export function MenuBar() {
   }
 
   return (
-    <aside className="h-fit w-72">
+    <aside className="h-fit w-72 animate-shake animate-once" >
       <nav>
         <form
           onSubmit={e => handleSearchPokemons(e)}
           className="flex w-full p-2"
         >
           <label
-            className="flex-column w-full
+            className="flex-column w-full 
            text-center text-xs"
             htmlFor="search"
           >
@@ -66,7 +66,7 @@ export function MenuBar() {
           )}
         </button>
         <ul
-          className='max-h-[400px] overflow-y-auto
+          className='max-h-[400px] overflow-y-auto 
               [&::-webkit-scrollbar]:w-2
              [&::-webkit-scrollbar-track]:bg-gray-100
              [&::-webkit-scrollbar-thumb]:bg-gray-300
@@ -76,13 +76,16 @@ export function MenuBar() {
           {!isHidden &&
             pokemonsTypes.map((item, index) => (
               <li
-                className="border-b-2 w-full border-dark hover:bg-gray-200 hover:text-white transition duration-300 ease-in-out"
+              
+                className="border-b-2 w-full 
+                border-dark hover:bg-gray-200 hover:text-white transition duration-300 ease-in-out
+              "
                 key={index}
                 style={{ color: item.color }}
               >
                 <a
                   href={`/${item.typeName}`}
-                  className="flex items-center space-x-2 p-4"
+                  className="flex items-center space-x-2 p-4 animate-flip-down animate-once"
                 >
                   <item.icon size={24} />
                   <span className="">{item.typeName}</span>
