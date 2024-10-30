@@ -90,7 +90,8 @@ export function Card({
  
     </div>
   ) : (
-    <div
+    <a href={`/pokemon/${name}`}>   
+     <div
       className={twMerge(
         `w-full max-w-xs h-card rounded-3xl relative  p-4 flex items-center justify-center flex-co`
       )}
@@ -151,5 +152,6 @@ export function Card({
       </div>
       <span className="absolute bottom-0 text-xs right-10">#{id}</span>
     </div>
+    </a>
   )
 }

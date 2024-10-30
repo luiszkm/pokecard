@@ -19,6 +19,7 @@ type PokemonAbilities = {
 }
 export function Ability({ abilities }: Abilities) {
   const [ability, setAbility] = useState <AbilityProps[]>([] as AbilityProps[])
+  console.log(ability);
   
 
   useEffect(() => {
@@ -49,11 +50,17 @@ export function Ability({ abilities }: Abilities) {
     >
       {ability &&
         ability.map((item, index) => (
-          <div className='flex flex-col items-start p-2 border rounded-lg w-80 shadow'
+          <div className='flex flex-col items-start p-2 border rounded-lg w-80 shadow '
       
           key={index} title={item.short_effect}>
             <strong className='flex items-center gap-2'> <GiAlliedStar />{item.abilityName}:</strong>
-           <p className='text-sm font-normal'> {item.effect}</p>
+           <p className='text-sm font-normal h-28
+          overflow-y-auto
+          [&::-webkit-scrollbar]:w-2
+        [&::-webkit-scrollbar-track]:bg-gray-100
+        [&::-webkit-scrollbar-thumb]:bg-gray-300
+        dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+          dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500'> {item.effect}</p>
           </div>
         ))}
     </div>

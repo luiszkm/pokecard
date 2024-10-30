@@ -43,6 +43,7 @@ module.exports = {
       },
       height :{
         card: "480px",
+        cardDetails: "600px",
       },
 
       keyframes: {

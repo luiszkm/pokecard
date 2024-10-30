@@ -4,6 +4,7 @@ import { PokemonData } from '@/@types/pokeapi'
 import { PokemonSpecies } from '@/@types/evolution'
 import { useParams } from 'next/navigation'
 import { Details } from '@/components/details'
+import { CarouselComponent } from '@/components/CarouselCardDetails'
 
 type PokemonsProps = {
   id: number

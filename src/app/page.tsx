@@ -20,7 +20,6 @@ type PokemonsProps = {
   pokemonEvolution: string
 }
 
-
 const paginate = 9
 
 export default function Pokemons() {
@@ -28,58 +27,58 @@ export default function Pokemons() {
   const totalPages = 1293
   const [isLoading, setIsLoading] = useState(false)
 
-  async function handleSearchPokemonsPaginated(pagRendered: number
-  ) {
+  async function handleSearchPokemonsPaginated(pagRendered: number) {
     setIsLoading(true) // Indica que a busca está em andamento
     try {
       const data = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/?offset=${pagRendered}&limit=9`,{
+        `https://pokeapi.co/api/v2/pokemon/?offset=${pagRendered}&limit=9`,
+        {
           next: {
             revalidate: 60 * 60 * 24 * 30 * 7,
             tags: ['pokemons']
-        }
-    })
-      const response: PokemonPaginated = await data.json()
-      
-      const pokemontypesList = response.results
-      let totalPokemonsTypesWithImages : PokemonData[] = []
-    for (const pokemon of pokemontypesList) {
-      
-      try {
-        const data = await fetch(`${pokemon.url}`, {
-          next: {
-            revalidate: 60 * 60 * 24 * 30,
-            tags: ['pokemons']
           }
-        })
-        const response: PokemonData = await data.json()
-        const hasImage = response.sprites?.other.dream_world.front_default ||
-        response.sprites?.other['official-artwork'].front_default ||
-        response.sprites?.other['home'].front_default ||
-        response.sprites?.front_default 
-        if (hasImage !== null ) {
-            totalPokemonsTypesWithImages.push(response)
         }
+      )
+      const response: PokemonPaginated = await data.json()
 
-      } catch (error) {}
-    }
-   
-    
-    let pokemonList : PokemonsProps[] = []
-      for(const pokemonIndex  of totalPokemonsTypesWithImages){
+      const pokemontypesList = response.results
+      let totalPokemonsTypesWithImages: PokemonData[] = []
+      for (const pokemon of pokemontypesList) {
+        try {
+          const data = await fetch(`${pokemon.url}`, {
+            next: {
+              revalidate: 60 * 60 * 24 * 30,
+              tags: ['pokemons']
+            }
+          })
+          const response: PokemonData = await data.json()
+          const hasImage =
+            response.sprites?.other.dream_world.front_default ||
+            response.sprites?.other['official-artwork'].front_default ||
+            response.sprites?.other['home'].front_default ||
+            response.sprites?.front_default
+          if (hasImage !== null) {
+            totalPokemonsTypesWithImages.push(response)
+          }
+        } catch (error) {}
+      }
+
+      let pokemonList: PokemonsProps[] = []
+      for (const pokemonIndex of totalPokemonsTypesWithImages) {
         try {
           setIsLoading(true)
-          if(pokemonIndex){
-
-            const imagePrimary = pokemonIndex.sprites?.other.dream_world.front_default ||  pokemonIndex.sprites?.other['official-artwork'].front_default
-            
+          if (pokemonIndex) {
+            const imagePrimary =
+              pokemonIndex.sprites?.other.dream_world.front_default ||
+              pokemonIndex.sprites?.other['official-artwork'].front_default
 
             const pokemon = {
               id: pokemonIndex.id,
               name: pokemonIndex.name,
-              image:   imagePrimary ,
+              image: imagePrimary,
               secondImage:
-              pokemonIndex.sprites?.front_default || pokemonIndex.sprites?.other['home'].front_default,
+                pokemonIndex.sprites?.front_default ||
+                pokemonIndex.sprites?.other['home'].front_default,
               abilities: pokemonIndex.abilities,
               height: pokemonIndex.height,
               weight: pokemonIndex.weight,
@@ -90,13 +89,11 @@ export default function Pokemons() {
             }
             pokemonList.push(pokemon)
           }
-         
-          
+
           setIsLoading(false)
-         } catch (error) {
-          }
+        } catch (error) {}
       }
-      
+
       setPokemonPaginated(pokemonList)
       setIsLoading(false) // Indica que a busca foi concluída
     } catch (error) {
@@ -108,12 +105,12 @@ export default function Pokemons() {
   const handlePageChange = (page: number) => {
     const pagination = page * paginate
     const pagRender = Number(page - 1) * paginate
-    handleSearchPokemonsPaginated( pagRender)
+    handleSearchPokemonsPaginated(pagRender)
   }
 
   useEffect(() => {
-    console.log(paginate);
-    
+    console.log(paginate)
+
     handleSearchPokemonsPaginated(0)
   }, [])
   return (
@@ -121,21 +118,22 @@ export default function Pokemons() {
       <section className="grid gap-3 md:grid-cols-3">
         {pokemonPaginated &&
           pokemonPaginated.map(pokemon => (
-            <Card
-              isLoading={isLoading}
-              key={`${pokemon.image}`}
-              id={pokemon.id}
-              image={pokemon.image}
-              secondImage={pokemon.secondImage}
-              name={pokemon.name}
-              prevEvolution={pokemon.pokemonEvolution}
-              experience={pokemon.experience}
-              height={pokemon.height}
-              weight={pokemon.weight}
-              stats={pokemon.stats}
-              pokemonAbilities={pokemon.abilities}
-              pokemonType={pokemon.pokemonType}
-            />
+         
+              <Card
+                isLoading={isLoading}
+                key={`${pokemon.image}`}
+                id={pokemon.id}
+                image={pokemon.image}
+                secondImage={pokemon.secondImage}
+                name={pokemon.name}
+                prevEvolution={pokemon.pokemonEvolution}
+                experience={pokemon.experience}
+                height={pokemon.height}
+                weight={pokemon.weight}
+                stats={pokemon.stats}
+                pokemonAbilities={pokemon.abilities}
+                pokemonType={pokemon.pokemonType}
+              />
           ))}
       </section>
 

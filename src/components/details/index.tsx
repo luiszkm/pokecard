@@ -93,7 +93,7 @@ export function Details({
 
   return (
     <div
-      className="w-full max-w-4xl  rounded-3xl relative  
+      className="w-full max-w-4xl h-cardDetails rounded-3xl relative  
       p-4 flex items-center justify-center "
       style={{
         background: `linear-gradient( ${bgColor}, ${bgcolor_secondary})`
