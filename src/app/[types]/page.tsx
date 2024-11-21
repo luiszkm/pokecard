@@ -6,7 +6,7 @@ import { Pagination } from '@/components/Pagination';
 import { useParams } from 'next/navigation';
 import { PokemonData, Pokemontypes } from '@/@types/pokeapi';
 
-const paginate = 9; // Número de itens por página
+const paginate = 9 // Número de itens por página
 
 type PokemonProps = {
   id: number;
@@ -40,12 +40,15 @@ export default function Types() {
         data.sprites?.front_default;
 
       if (!hasImage) return null;
-
+      const imagePrimary =
+          data.sprites?.other.dream_world.front_default ||
+          data.sprites?.other['official-artwork'].front_default;
+      
       return {
         id: data.id,
         name: data.name,
-        image: data.sprites?.other.dream_world.front_default || data.sprites?.front_default,
-        secondImage: data.sprites?.other['official-artwork'].front_default,
+        image: imagePrimary,
+        secondImage: data.sprites?.front_default,
         abilities: data.abilities,
         height: data.height,
         weight: data.weight,

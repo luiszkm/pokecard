@@ -1,144 +1,124 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { PokemonData, PokemonPaginated } from '@/@types/pokeapi'
-import { Card } from '@/components/card'
-import { Pagination } from '@/components/Pagination'
+import { useEffect, useState } from 'react';
+import { PokemonData, PokemonPaginated } from '@/@types/pokeapi';
+import { Card } from '@/components/card';
+import { Pagination } from '@/components/Pagination';
 
 type PokemonsProps = {
-  id: number
-  name: string
-  image: string
-  secondImage: string
-  abilities: PokemonData['abilities']
-  height: number
-  weight: number
-  stats: PokemonData['stats']
-  experience: number
-  pokemonType: string[]
-  pokemonEvolution: string
-}
+  id: number;
+  name: string;
+  image: string;
+  secondImage: string;
+  abilities: PokemonData['abilities'];
+  height: number;
+  weight: number;
+  stats: PokemonData['stats'];
+  experience: number;
+  pokemonType: string[];
+  pokemonEvolution: string;
+};
 
-const paginate = 9
+const paginate = 9;
 
 export default function Pokemons() {
-  const [pokemonPaginated, setPokemonPaginated] = useState<PokemonsProps[]>([])
-  const totalPages = 1293
-  const [isLoading, setIsLoading] = useState(false)
+  const [pokemonPaginated, setPokemonPaginated] = useState<PokemonsProps[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const totalPages = 1293;
 
-  async function handleSearchPokemonsPaginated(pagRendered: number) {
-    setIsLoading(true) // Indica que a busca está em andamento
+  const fetchPokemonData = async (offset: number) => {
+    setIsLoading(true);
     try {
-      const data = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/?offset=${pagRendered}&limit=9`,
+      const res = await fetch(
+        `https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${paginate}`,
         {
-          next: {
-            revalidate: 60 * 60 * 24 * 30 * 7,
-            tags: ['pokemons']
-          }
+          next: { revalidate: 60 * 60 * 24 * 30, tags: ['pokemons'] },
         }
-      )
-      const response: PokemonPaginated = await data.json()
+      );
+      const { results }: PokemonPaginated = await res.json();
+      const pokemonDetails = await fetchPokemonsDetails(results.map(p => p.url));
 
-      const pokemontypesList = response.results
-      let totalPokemonsTypesWithImages: PokemonData[] = []
-      for (const pokemon of pokemontypesList) {
-        try {
-          const data = await fetch(`${pokemon.url}`, {
-            next: {
-              revalidate: 60 * 60 * 24 * 30,
-              tags: ['pokemons']
-            }
-          })
-          const response: PokemonData = await data.json()
-          const hasImage =
-            response.sprites?.other.dream_world.front_default ||
-            response.sprites?.other['official-artwork'].front_default ||
-            response.sprites?.other['home'].front_default ||
-            response.sprites?.front_default
-          if (hasImage !== null) {
-            totalPokemonsTypesWithImages.push(response)
-          }
-        } catch (error) {}
-      }
+      const pokemons = pokemonDetails.map(pokemon => {
+        const imagePrimary =
+          pokemon.sprites?.other.dream_world.front_default ||
+          pokemon.sprites?.other['official-artwork'].front_default;
 
-      let pokemonList: PokemonsProps[] = []
-      for (const pokemonIndex of totalPokemonsTypesWithImages) {
-        try {
-          setIsLoading(true)
-          const typesNames = pokemonIndex.types.map(item => item.type.name)
-          
-          if (pokemonIndex) {
-            const imagePrimary =
-              pokemonIndex.sprites?.other.dream_world.front_default ||
-              pokemonIndex.sprites?.other['official-artwork'].front_default
+        return {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: imagePrimary,
+          secondImage: pokemon.sprites?.front_default,
+          abilities: pokemon.abilities,
+          height: pokemon.height,
+          weight: pokemon.weight,
+          stats: pokemon.stats,
+          experience: pokemon.base_experience,
+          pokemonType: pokemon.types.map(t => t.type.name),
+          pokemonEvolution: '',
+        };
+      });
 
-            const pokemon = {
-              id: pokemonIndex.id,
-              name: pokemonIndex.name,
-              image: imagePrimary,
-              secondImage:
-                pokemonIndex.sprites?.front_default ||
-                pokemonIndex.sprites?.other['home'].front_default,
-              abilities: pokemonIndex.abilities,
-              height: pokemonIndex.height,
-              weight: pokemonIndex.weight,
-              stats: pokemonIndex.stats,
-              experience: pokemonIndex.base_experience,
-              pokemonType:typesNames,
-              pokemonEvolution: ''
-            }
-            pokemonList.push(pokemon)
-          }
-
-          setIsLoading(false)
-        } catch (error) {}
-      }
-
-      setPokemonPaginated(pokemonList)
-      setIsLoading(false) // Indica que a busca foi concluída
+      setPokemonPaginated(pokemons);
     } catch (error) {
-      console.log('error', error)
-      setIsLoading(false) // Indica que ocorreu um erro durante a busca
+      console.error('Error fetching Pokémon:', error);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
+
+  const fetchPokemonsDetails = async (urls: string[]) => {
+    const promises = urls.map(url =>
+      fetch(url).then(res => res.json())
+    );
+
+    try {
+      const responses = await Promise.all(promises);
+      return responses.filter(
+        response =>
+          response.sprites?.other.dream_world.front_default ||
+          response.sprites?.other['official-artwork'].front_default
+      );
+    } catch (error) {
+      console.error('Error fetching details:', error);
+      return [];
+    }
+  };
 
   const handlePageChange = (page: number) => {
-    const pagination = page * paginate
-    const pagRender = Number(page - 1) * paginate
-    handleSearchPokemonsPaginated(pagRender)
-  }
+    const offset = (page - 1) * paginate;
+    fetchPokemonData(offset);
+  };
 
   useEffect(() => {
-    console.log(paginate)
+    fetchPokemonData(0);
+  }, []);
 
-    handleSearchPokemonsPaginated(0)
-  }, [])
   return (
     <main className="flex flex-col items-center gap-3">
       <section className="grid gap-3 md:grid-cols-3">
-        {pokemonPaginated &&
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
           pokemonPaginated.map(pokemon => (
-         
-              <Card
-                isLoading={isLoading}
-                key={`${pokemon.image}`}
-                id={pokemon.id}
-                image={pokemon.image}
-                secondImage={pokemon.secondImage}
-                name={pokemon.name}
-                prevEvolution={pokemon.pokemonEvolution}
-                experience={pokemon.experience}
-                height={pokemon.height}
-                weight={pokemon.weight}
-                stats={pokemon.stats}
-                pokemonAbilities={pokemon.abilities}
-                pokemonType={pokemon.pokemonType}
-              />
-          ))}
+            <Card
+              isLoading={false}
+              key={`${pokemon.image}`}
+              id={pokemon.id}
+              image={pokemon.image}
+              secondImage={pokemon.secondImage}
+              name={pokemon.name}
+              prevEvolution={pokemon.pokemonEvolution}
+              experience={pokemon.experience}
+              height={pokemon.height}
+              weight={pokemon.weight}
+              stats={pokemon.stats}
+              pokemonAbilities={pokemon.abilities}
+              pokemonType={pokemon.pokemonType}
+            />
+          ))
+        )}
       </section>
-
       <Pagination pageLength={totalPages} onPageChange={handlePageChange} />
     </main>
-  )
+  );
 }
