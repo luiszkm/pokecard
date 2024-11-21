@@ -30,6 +30,8 @@ type evolutionProps = {
 export default function PokemonDetails() {
   const [pokemon, setPokemon] = useState<PokemonsProps>({} as PokemonsProps)
   const { pokemonDetails } = useParams()
+  const [isLoading, setIsLoading] = useState(false)
+
 
   async function handleSearchPokemons() {
     setPokemon({} as PokemonsProps)
@@ -41,7 +43,6 @@ export default function PokemonDetails() {
       (await handleSearchPokemonEvolution(response.name)) || []
 
     const typesNames = response.types.map(item => item.type.name)
-    console.log(typesNames);
     
     const pokemon: PokemonsProps = {
       id: response.id,
@@ -114,9 +115,10 @@ export default function PokemonDetails() {
       console.log(error)
     }
   }
+  
 
-  useEffect(() => {
-    handleSearchPokemons()
+  useEffect(  () => {
+     handleSearchPokemons()
   }, [])
   return (
     <main className="space-y-3">

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { PokemonData, PokemonPaginated } from '@/@types/pokeapi'
-import { EvolutionChain } from '@/@types/evolution'
 import { Card } from '@/components/card'
 import { Pagination } from '@/components/Pagination'
 
@@ -16,7 +15,7 @@ type PokemonsProps = {
   weight: number
   stats: PokemonData['stats']
   experience: number
-  pokemonType: PokemonData['types']
+  pokemonType: string[]
   pokemonEvolution: string
 }
 
@@ -67,6 +66,8 @@ export default function Pokemons() {
       for (const pokemonIndex of totalPokemonsTypesWithImages) {
         try {
           setIsLoading(true)
+          const typesNames = pokemonIndex.types.map(item => item.type.name)
+          
           if (pokemonIndex) {
             const imagePrimary =
               pokemonIndex.sprites?.other.dream_world.front_default ||
@@ -84,7 +85,7 @@ export default function Pokemons() {
               weight: pokemonIndex.weight,
               stats: pokemonIndex.stats,
               experience: pokemonIndex.base_experience,
-              pokemonType: pokemonIndex.types,
+              pokemonType:typesNames,
               pokemonEvolution: ''
             }
             pokemonList.push(pokemon)

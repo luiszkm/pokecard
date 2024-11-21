@@ -18,7 +18,7 @@ type PokemonsProps = {
   weight: number
   stats: PokemonData['stats']
   experience: number
-  pokemonType: PokemonData['types']
+  pokemonType: string[]
   pokemonEvolution: string
 }
 type PokemonAbilities = {
@@ -80,6 +80,8 @@ export default function Types() {
      try {
       setIsLoading(true)
       const pokemonIndex = totalPokemonsTypesWithImages[i]
+      const typesNames = pokemonIndex.types.map(item => item.type.name)
+
       if(pokemonIndex){
         const pokemon = {
           id: pokemonIndex.id,
@@ -92,7 +94,7 @@ export default function Types() {
           weight: pokemonIndex.weight,
           stats: pokemonIndex.stats,
           experience: pokemonIndex.base_experience,
-          pokemonType: pokemonIndex.types,
+          pokemonType: typesNames,
           pokemonEvolution: ''
         }
         pokemonList.push(pokemon)

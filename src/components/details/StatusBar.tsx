@@ -44,13 +44,12 @@ export function StatusBar({ baseStatus, baseName }: StatusBarProps) {
       icon: GiVibratingShield
     }
   ]
-  const totalBar = Number(baseStatus / 2)
   const stat = status.find(item => item.name === baseName)
   return (
     <ul className="w-full">
       <li className="flex items-center">
         {stat && <stat.icon key={stat.name} title={baseName} className="w-8" />}
-         <Progress value={totalBar} title={String(baseStatus)}/>
+         <Progress value={baseStatus/2} title={String(baseStatus)}/>
       
       </li>
     </ul>

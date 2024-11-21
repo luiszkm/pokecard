@@ -5,8 +5,9 @@ import { pokemonsTypes } from '@/utils/types'
 import { TbArrowBigUpLine, TbLineHeight } from 'react-icons/tb'
 import { GiWeight } from 'react-icons/gi'
 import { twMerge } from 'tailwind-merge'
-import { Weaknesses } from './Weaknesses'
 import Image from 'next/image'
+import { WeaknessesPokemonType } from '../WeaknessesPokemonType'
+import { GetTypeIcons } from '../GetTypeIcons'
 type StatsProps = {
   base_stat: number
   stat: {
@@ -19,12 +20,7 @@ type PokemonAbilities = {
     url: string
   }
 }
-type PokemonTypes = {
-  type: {
-    name: string
-    url: string
-  }
-}
+
 
 type CardProps = {
   isLoading: boolean
@@ -38,7 +34,7 @@ type CardProps = {
   height: number
   stats: StatsProps[]
   pokemonAbilities: PokemonAbilities[]
-  pokemonType: PokemonTypes[]
+  pokemonType: string[]
 }
 
 export function Card({
@@ -55,7 +51,7 @@ export function Card({
   pokemonType,
   isLoading
 }: Readonly<CardProps>) {
-  const types = pokemonType?.map(item => item.type.name)
+  const types = pokemonType?.map(item => item)
   const typesFiltered = types?.map(i => {
     return pokemonsTypes?.filter(item => item.typeName === i)
   })
@@ -104,14 +100,8 @@ export function Card({
           <AvatarEvolution evolution={prevEvolution} />
           <h2>{name}</h2>
           <div className="flex items-center">
-            {typesFiltered &&
-              typesFiltered.map(item => {
-                const typeprops = item.map(item => item)
-                const types = typeprops[0]
-                return (
-                  <types.icon key={types.typeName} title={types.typeName} />
-                )
-              })}
+          <GetTypeIcons types={pokemonType} />
+
           </div>
         </div>
         <img
@@ -146,10 +136,13 @@ export function Card({
                 />
               ))}
           </ul>
-          <Ability abilities={pokemonAbilities} />
+        <div className='flex flex-col py-0 px-2 gap-5'>
+        <Ability abilities={pokemonAbilities} />
+        <WeaknessesPokemonType types={pokemonType} />
         </div>
-        <Weaknesses />
+        </div>
       </div>
+      
       <span className="absolute bottom-0 text-xs right-10">#{id}</span>
     </div>
     </a>

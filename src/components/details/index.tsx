@@ -4,8 +4,9 @@ import { pokemonsTypes } from '@/utils/types'
 import { TbArrowBigUpLine, TbLineHeight } from 'react-icons/tb'
 import { GiWeight } from 'react-icons/gi'
 import { StatusBar } from './StatusBar'
-import { WeaknessesPokemonType } from './WeaknessesPokemonType'
+import { WeaknessesPokemonType } from '../WeaknessesPokemonType'
 import { GetTypeIcons } from '../GetTypeIcons'
+import Image from 'next/image'
 
 type StatsProps = {
   base_stat: number
@@ -89,8 +90,23 @@ export function Details({
 
   if (evolutions === undefined) evolutions = []
   const pokemonChainEvolution = evolutions.filter(i => i.name !== name)
-
-  return (
+  
+  return isLoading ? (
+    <div className=' min-w-xs p-4 h-card rounded-3xl bg-gradient-to-tr from-black via-zinc-700 to-zinc-900 animate-pulse'>
+      <div className='h-full w-full rounded-3xl  p-4 flex items-center justify-center
+      bg-gradient-to-tl from-neutral-700 via-slate-100 to-gray-700'>
+      
+      <Image
+        src="/images/5.png"
+        width={200}
+        height={200}
+        alt="imagem de uma pokebola"
+      />
+      </div>
+ 
+    </div>
+  ) : 
+   (
     <div
       className="w-full max-w-4xl h-cardDetails rounded-3xl relative  
       p-4 flex items-center justify-center "
@@ -109,7 +125,7 @@ export function Details({
           </div>
           <img
             className={
-              ' w-full max-w-xs h-1/2 rounded-3xl object-center shadow '
+              ' w-full max-w-xs h-1/2 rounded-3xl object-center shadow animate-fade-down'
             }
             style={{
               backgroundImage: `repeating-conic-gradient(${bgColor} 17%, #f3f3ee 22%)`
@@ -135,7 +151,7 @@ export function Details({
               {stats &&
                 stats.map((item: StatsProps) => (
                   <StatusBar
-                    key={item.stat.name}
+                  key={`${item.stat.name}-${item.base_stat}`} 
                     baseName={item.stat.name}
                     baseStatus={item.base_stat}
                   />
@@ -153,11 +169,12 @@ export function Details({
               return (
                 <a
                   href={`/pokemon/${item.name}`}
-                  className="flex-col gap-3"
+                  className="flex-col gap-3 "
                   key={index}
                 >
                   <span className="m-2">{item.name}</span>
-                  <img src={item.imgs[1]} alt="" />
+                  <img className='animate-fade-right'
+                   src={item.imgs[1]} alt="" />
                 </a>
               )
             })}

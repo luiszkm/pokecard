@@ -55,7 +55,7 @@ export function WeaknessesPokemonType({ types }: PokemonWeaknessesProps) {
 
   return (
     <div className="flex items-center gap-1 text-2xl">
-      <strong title="takes double damage" className="text-lg">
+      <strong title="takes double damage" className="text-base">
         Weaknesses:
       </strong>
       <div className="flex items-center gap-1">
@@ -68,7 +68,7 @@ export function WeaknessesPokemonType({ types }: PokemonWeaknessesProps) {
               title={item.name}
               className="flex items-center gap-1"
             >
-              {IconComponent && <IconComponent className="w-6 h-6" />}
+              {IconComponent && <IconComponent className="w-4 h-4" />}
             </div>
           )
         })}
