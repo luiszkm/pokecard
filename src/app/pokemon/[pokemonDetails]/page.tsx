@@ -1,13 +1,12 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import { PokemonData } from '@/@types/pokeapi'
-import { PokemonSpecies } from '@/@types/evolution'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { Details } from '@/components/details'
-import { CarouselComponent } from '@/components/CarouselCardDetails'
 
 type PokemonsProps = {
-  id: number
+  id: string
   name: string
   image: string
   secondImage: string
@@ -20,110 +19,138 @@ type PokemonsProps = {
   chainEvolutions: evolutionProps[]
 }
 
-
-
 type evolutionProps = {
   name: string
   imgs: string[]
 }
 
+const requestCache = new Map<string, any>() // Cache para armazenar requisições
+
+async function cachedFetch(url: string) {
+  if (requestCache.has(url)) {
+    return requestCache.get(url)
+  }
+  const response = await fetch(url, {
+    next: {
+      revalidate: 60 * 60 * 24 * 30 * 7,
+      tags: ['pokemon-evolution'],
+    },
+  })
+  const data = await response.json()
+  requestCache.set(url, data)
+  return data
+}
+
+async function evolutionsList(url: string) {
+  try {
+    const response = await cachedFetch(url)
+    const chain = response.chain
+
+    const evolutions: string[] = []
+    let current = chain
+    while (current) {
+      evolutions.push(current.species.name)
+      current = current.evolves_to[0] || null
+    }
+    return evolutions
+  } catch (error) {
+    console.error(error)
+    return []
+  }
+}
+
+async function handleSearchPokemonEvolution(name: string) {
+  try {
+    const speciesData = await cachedFetch(
+      `https://pokeapi.co/api/v2/pokemon-species/${name}`
+    )
+    const evolutions = await evolutionsList(speciesData.evolution_chain.url)
+
+    const evolutionPromises = evolutions.map(async (evolution) => {
+      const evolutionData = await cachedFetch(
+        `https://pokeapi.co/api/v2/pokemon/${evolution}`
+      )
+
+      const evolutionImages = [
+        evolutionData.sprites?.other.dream_world.front_default,
+        evolutionData.sprites?.other['official-artwork'].front_default,
+        evolutionData.sprites?.other['home'].front_default,
+        evolutionData.sprites?.front_default,
+      ]
+      return {
+        name: evolution,
+        imgs: evolutionImages,
+      }
+    })
+
+    return await Promise.all(evolutionPromises)
+  } catch (error) {
+    console.error(error)
+    return []
+  }
+}
+
 export default function PokemonDetails() {
+  const {pokemonDetails} = useParams()
   const [pokemon, setPokemon] = useState<PokemonsProps>({} as PokemonsProps)
-  const { pokemonDetails } = useParams()
+  const [currentId, setCurrentId] = useState(Number(pokemonDetails)) // ID inicial
   const [isLoading, setIsLoading] = useState(false)
 
-
-  async function handleSearchPokemons() {
-    setPokemon({} as PokemonsProps)
-    const data = await fetch(
-      `https://pokeapi.co/api/v2/pokemon/${pokemonDetails}`
-    )
-    const response: PokemonData = await data.json()
-    const chainEvolution =
-      (await handleSearchPokemonEvolution(response.name)) || []
-
-    const typesNames = response.types.map(item => item.type.name)
-    
-    const pokemon: PokemonsProps = {
-      id: response.id,
-      name: response.name,
-      image: response.sprites?.other.dream_world.front_default,
-      secondImage: response.sprites?.other['official-artwork'].front_default,
-      abilities: response.abilities,
-      height: response.height,
-      weight: response.weight,
-      stats: response.stats,
-      experience: response.base_experience,
-      pokemonType: typesNames,
-      chainEvolutions: chainEvolution,
-    }
-    setPokemon(pokemon)
-  }
-  async function handleSearchPokemonEvolution(name: string) {
+  const {}= useRouter()
+  async function handleSearchPokemons(id: string) {
+    setIsLoading(true)
     try {
-      const data = await fetch(
-        `https://pokeapi.co/api/v2/pokemon-species/${name}`,
-        {
-          next: {
-            revalidate: 60 * 60 * 24 * 30 * 7,
-            tags: ['pokemon-evolution']
-          }
-        }
-      )
-      const response: PokemonSpecies = await data.json()
-      const evolutions = await evolutionsList(response.evolution_chain.url)
+      const data = await cachedFetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+      const chainEvolution = await handleSearchPokemonEvolution(data.name)
 
-      const evolutionPromises = evolutions!.map(async evolution => {
-        const data = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${evolution}`
-        )
-        const response: PokemonData = await data.json()
+      const typesNames = data.types.map((item: any) => item.type.name)
 
-        const evolutionImages = [
-          response.sprites?.other.dream_world.front_default,
-          response.sprites?.other['official-artwork'].front_default,
-          response.sprites?.other['home'].front_default,
-          response.sprites?.front_default
-        ]
-        return {
-          name: evolution,
-          imgs: evolutionImages
-        }
-      })
-
-      const imagesEvolutions = await Promise.all(evolutionPromises)
-      return imagesEvolutions
+      const pokemonData: PokemonsProps = {
+        id: data.id,
+        name: data.name,
+        image: data.sprites?.other.dream_world.front_default,
+        secondImage: data.sprites?.other['official-artwork'].front_default,
+        abilities: data.abilities,
+        height: data.height,
+        weight: data.weight,
+        stats: data.stats,
+        experience: data.base_experience,
+        pokemonType: typesNames,
+        chainEvolutions: chainEvolution,
+      }
+      
+      setCurrentId(data.id);
+      //setEvolutionIndex(0); // Resetar o índice de evolução
+      setPokemon(pokemonData)
     } catch (error) {
-      console.log(error)
+      console.error('Failed to fetch Pokémon:', error)
+    } finally {
+      setIsLoading(false)
+      
     }
   }
-  async function evolutionsList(url: string) {
-    try {
-      const data = await fetch(url, {
-        next: {
-          revalidate: 60 * 60 * 24 * 30 * 7,
-          tags: ['pokemon-evolution']
-        }
-      })
-      const response = await data.json()
-      const mainPokemon = response.chain.species.name
-      const evolutionOne = response.chain.evolves_to[0]?.species.name || ''
-      const evolutionTwo =
-        response.chain.evolves_to[0]?.evolves_to[0]?.species.name || ''
-      return [mainPokemon, evolutionOne, evolutionTwo]
-    } catch (error) {
-      console.log(error)
+
+  const handleNext = () => {
+    if (currentId < 1010) { // Limite máximo de Pokémons
+      setCurrentId((prev) => prev + 1)
     }
   }
-  
 
-  useEffect(  () => {
-     handleSearchPokemons()
-  }, [])
+  const handlePrevious = () => {
+    if (currentId > 1) { // Limite mínimo
+      setCurrentId((prev) => prev - 1)
+    }
+  }
+
+  useEffect(() => {
+    handleSearchPokemons(currentId.toString())
+  }, [currentId])
+
   return (
     <main className="space-y-3">
       <Details
-        isLoading={false}
+        onEvolutionClick={(name: string) => handleSearchPokemons(name)}
+        isLoading={isLoading}
         key={pokemon.id}
         id={pokemon.id}
         image={pokemon.image}
@@ -135,8 +162,24 @@ export default function PokemonDetails() {
         weight={pokemon.weight}
         stats={pokemon.stats}
         pokemonAbilities={pokemon.abilities}
-        pokemonType={pokemon.pokemonType}       
+        pokemonType={pokemon.pokemonType}
       />
+      <div className="flex justify-between">
+        <button
+          onClick={handlePrevious}
+          disabled={currentId === 1}
+          className={`btn ${currentId === 1 ? 'btn-disabled' : 'btn-primary'}`}
+        >
+          Previous
+        </button>
+        <button
+          onClick={handleNext}
+          disabled={currentId === 1010}
+          className={`btn ${currentId === 1010 ? 'btn-disabled' : 'btn-primary'}`}
+        >
+          Next
+        </button>
+      </div>
     </main>
   )
 }

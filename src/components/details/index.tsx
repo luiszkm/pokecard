@@ -20,28 +20,14 @@ type PokemonAbilities = {
     url: string
   }
 }
-type PokemonTypes = {
-  type: {
-    name: string
-    url: string
-  }
-}
 type evolutionProps = {
   name: string
   imgs: string[]
 }
-type weaknessProps = {
-  double_damage_from: string[]
-  double_damage_to: string[]
-  half_damage_from: string[]
-  half_damage_to: string[]
-  no_damage_from: string[]
-  no_damage_to: string[]
-}
 
 type CardProps = {
   isLoading: boolean
-  id: number
+  id: string
   name: string
   image: string
   secondImage: string
@@ -52,6 +38,7 @@ type CardProps = {
   stats: StatsProps[]
   pokemonAbilities: PokemonAbilities[]
   pokemonType: string[]
+  onEvolutionClick: (name: string) => void // Função para manipular o clique
 }
 
 export function Details({
@@ -66,7 +53,7 @@ export function Details({
   experience,
   pokemonAbilities,
   pokemonType,
-
+  onEvolutionClick, // Nova prop para cliques nas evoluções
   isLoading
 }: Readonly<CardProps>) {
   const typesFiltered = pokemonType?.map(i => {
@@ -90,23 +77,19 @@ export function Details({
 
   if (evolutions === undefined) evolutions = []
   const pokemonChainEvolution = evolutions.filter(i => i.name !== name)
-  
+
   return isLoading ? (
-    <div className=' min-w-xs p-4 h-card rounded-3xl bg-gradient-to-tr from-black via-zinc-700 to-zinc-900 animate-pulse'>
-      <div className='h-full w-full rounded-3xl  p-4 flex items-center justify-center
-      bg-gradient-to-tl from-neutral-700 via-slate-100 to-gray-700'>
-      
-      <Image
-        src="/images/5.png"
-        width={200}
-        height={200}
-        alt="imagem de uma pokebola"
-      />
+    <div className=" min-w-xs p-4 h-card rounded-3xl bg-gradient-to-tr from-black via-zinc-700 to-zinc-900 animate-pulse">
+      <div className="h-full w-full rounded-3xl  p-4 flex items-center justify-center bg-gradient-to-tl from-neutral-700 via-slate-100 to-gray-700">
+        <Image
+          src="/images/5.png"
+          width={200}
+          height={200}
+          alt="imagem de uma pokebola"
+        />
       </div>
- 
     </div>
-  ) : 
-   (
+  ) : (
     <div
       className="w-full max-w-4xl h-cardDetails rounded-3xl relative  
       p-4 flex items-center justify-center "
@@ -151,7 +134,7 @@ export function Details({
               {stats &&
                 stats.map((item: StatsProps) => (
                   <StatusBar
-                  key={`${item.stat.name}-${item.base_stat}`} 
+                    key={`${item.stat.name}-${item.base_stat}`}
                     baseName={item.stat.name}
                     baseStatus={item.base_stat}
                   />
@@ -167,20 +150,22 @@ export function Details({
           {pokemonChainEvolution &&
             pokemonChainEvolution.map((item, index) => {
               return (
-                <a
-                  href={`/pokemon/${item.name}`}
-                  className="flex-col gap-3 "
+                <button
+                  onClick={() => onEvolutionClick(item.name)} // Atualizar o estado ao clicar
+                  className="flex-col gap-3"
                   key={index}
                 >
                   <span className="m-2">{item.name}</span>
-                  <img className='animate-fade-right'
-                   src={item.imgs[1]} alt="" />
-                </a>
+                  <img
+                    className="animate-fade-right"
+                    src={item.imgs[1]}
+                    alt={item.name}
+                  />
+                </button>
               )
             })}
         </div>
       </div>
-
       <span className="absolute bottom-0 text-xs right-10">#{id}</span>
     </div>
   )

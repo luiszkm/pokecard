@@ -96,7 +96,6 @@ export default function Types() {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-  console.log(totalPages);
   
   useEffect(() => {
     fetchPokemonsByType();

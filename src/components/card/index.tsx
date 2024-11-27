@@ -86,7 +86,7 @@ export function Card({
  
     </div>
   ) : (
-    <a href={`/pokemon/${name}`}>   
+    <a href={`/pokemon/${id}`}>   
      <div
       className={twMerge(
         `w-full max-w-xs h-card rounded-3xl relative  p-4 flex items-center justify-center animate-rotate-y animate-once animate-ease-in-out`
