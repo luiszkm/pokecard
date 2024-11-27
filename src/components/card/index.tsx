@@ -86,16 +86,19 @@ export function Card({
  
     </div>
   ) : (
-    <a href={`/pokemon/${id}`}>   
+    <a className=' rounded-full hover:shadow-lg  hover:scale-105
+         '
+     href={`/pokemon/${id}`}>   
      <div
       className={twMerge(
-        `w-full max-w-xs h-card rounded-3xl relative  p-4 flex items-center justify-center animate-rotate-y animate-once animate-ease-in-out`
+        `w-full max-w-xs h-card rounded-3xl relative 
+         p-4 flex items-center justify-center animate-rotate-y animate-once animate-ease-in-out`
       )}
       style={{
         background: `linear-gradient( ${bgColor}, ${bgcolor_secondary})`
       }}
     >
-      <div className="w-full bg-white h-full rounded-3xl ">
+      <div className="w-full bg-white h-full rounded-3xl hove:scale-105 ">
         <div className=" w-full flex items-center justify-between pr-1">
           <AvatarEvolution evolution={prevEvolution} />
           <h2>{name}</h2>

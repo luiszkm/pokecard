@@ -79,8 +79,11 @@ export function Details({
   const pokemonChainEvolution = evolutions.filter(i => i.name !== name)
 
   return isLoading ? (
-    <div className=" min-w-xs p-4 h-card rounded-3xl bg-gradient-to-tr from-black via-zinc-700 to-zinc-900 animate-pulse">
-      <div className="h-full w-full rounded-3xl  p-4 flex items-center justify-center bg-gradient-to-tl from-neutral-700 via-slate-100 to-gray-700">
+    <div className=" w-full max-w-4xl h-cardDetails rounded-3xl relative  
+      p-4 flex items-center justify-center bg-black ">
+      <div style={{ background: `repeating-conic-gradient(black 17%, #f3f3ee 22%)` }}
+       className="h-full w-full rounded-3xl  p-4 flex items-center animate-pulse
+       justify-center bg-gradient-to-tl from-neutral-700 via-slate-100 to-gray-700">
         <Image
           src="/images/5.png"
           width={200}
@@ -157,7 +160,7 @@ export function Details({
                 >
                   <span className="m-2">{item.name}</span>
                   <img
-                    className="animate-fade-right"
+                    className="animate-fade-right max-w-[200px] h-[200px] rounded-3xl"
                     src={item.imgs[1]}
                     alt={item.name}
                   />

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { PokemonData } from '@/@types/pokeapi'
 import { useParams, useRouter } from 'next/navigation'
 import { Details } from '@/components/details'
+import { TbPlayerTrackNext, TbPlayerTrackPrev } from 'react-icons/tb'
 
 type PokemonsProps = {
   id: string
@@ -147,7 +148,7 @@ export default function PokemonDetails() {
   }, [currentId])
 
   return (
-    <main className="space-y-3">
+    <main className="flex flex-col items-start w-full">
       <Details
         onEvolutionClick={(name: string) => handleSearchPokemons(name)}
         isLoading={isLoading}
@@ -164,20 +165,26 @@ export default function PokemonDetails() {
         pokemonAbilities={pokemon.abilities}
         pokemonType={pokemon.pokemonType}
       />
-      <div className="flex justify-between">
-        <button
+      <div className="flex items-center w-full max-w-4xl px-2 justify-between">
+        <button 
           onClick={handlePrevious}
           disabled={currentId === 1}
-          className={`btn ${currentId === 1 ? 'btn-disabled' : 'btn-primary'}`}
+          className={`btn ${currentId === 1 ? 'btn-disabled' : 'btn-primary'} 
+          flex items-center gap-2 border p-1 rounded-full bg-gray-100 hover:bg-gray-200`}
+          title={pokemon.name}
         >
+          <TbPlayerTrackPrev />
           Previous
         </button>
         <button
           onClick={handleNext}
           disabled={currentId === 1010}
-          className={`btn ${currentId === 1010 ? 'btn-disabled' : 'btn-primary'}`}
+          className={`btn ${currentId === 1010 ? 'btn-disabled' : 'btn-primary'} 
+          flex items-center gap-2 border p-1 rounded-full bg-gray-100 hover:bg-gray-200`}
+          title={pokemon.name}
         >
-          Next
+          Next 
+          <TbPlayerTrackNext />
         </button>
       </div>
     </main>
