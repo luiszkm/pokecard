@@ -94,11 +94,12 @@ async function handleSearchPokemonEvolution(name: string) {
 export default function PokemonDetails() {
   const {pokemonDetails} = useParams()
   const [pokemon, setPokemon] = useState<PokemonsProps>({} as PokemonsProps)
-  const [currentId, setCurrentId] = useState(Number(pokemonDetails)) // ID inicial
+  const [currentId, setCurrentId] = useState<number>() // ID inicial
   const [isLoading, setIsLoading] = useState(false)
 
   const {}= useRouter()
   async function handleSearchPokemons(id: string) {
+    setCurrentId(Number(id))
     setIsLoading(true)
     try {
       const data = await cachedFetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
@@ -132,19 +133,19 @@ export default function PokemonDetails() {
   }
 
   const handleNext = () => {
-    if (currentId < 1010) { // Limite máximo de Pokémons
-      setCurrentId((prev) => prev + 1)
+    if ((currentId ?? 0) < 1010) { // Limite máximo de Pokémons
+      setCurrentId((prev) => (prev ?? 0) + 1)
     }
   }
 
   const handlePrevious = () => {
-    if (currentId > 1) { // Limite mínimo
-      setCurrentId((prev) => prev - 1)
+    if ((currentId ?? 0) > 1) { // Limite mínimo
+      setCurrentId((prev) => (prev ?? 0) - 1)
     }
   }
 
   useEffect(() => {
-    handleSearchPokemons(currentId.toString())
+    handleSearchPokemons(pokemonDetails!.toString())
   }, [currentId])
 
   return (
@@ -165,7 +166,7 @@ export default function PokemonDetails() {
         pokemonAbilities={pokemon.abilities}
         pokemonType={pokemon.pokemonType}
       />
-      <div className="flex items-center w-full max-w-4xl px-2 justify-between">
+      <div className="flex items-center w-full max-w-4xl justify-between">
         <button 
           onClick={handlePrevious}
           disabled={currentId === 1}
