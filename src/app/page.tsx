@@ -53,7 +53,7 @@ export default function Pokemons() {
           weight: pokemon.weight,
           stats: pokemon.stats,
           experience: pokemon.base_experience,
-          pokemonType: pokemon.types.map(t => t.type.name),
+          pokemonType: pokemon.types.map((t: { type: { name: any; }; }) => t.type.name),
           pokemonEvolution: '',
         };
       });
