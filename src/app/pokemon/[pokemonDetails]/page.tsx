@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { PokemonData } from '@/@types/pokeapi'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { Details } from '@/components/details'
 import { TbPlayerTrackNext, TbPlayerTrackPrev } from 'react-icons/tb'
+import { MenuBar } from '@/components/MenuBar'
 
 type PokemonsProps = {
   id: string
@@ -34,8 +35,8 @@ async function cachedFetch(url: string) {
   const response = await fetch(url, {
     next: {
       revalidate: 60 * 60 * 24 * 30 * 7,
-      tags: ['pokemon-evolution'],
-    },
+      tags: ['pokemon-evolution']
+    }
   })
   const data = await response.json()
   requestCache.set(url, data)
@@ -67,7 +68,7 @@ async function handleSearchPokemonEvolution(name: string) {
     )
     const evolutions = await evolutionsList(speciesData.evolution_chain.url)
 
-    const evolutionPromises = evolutions.map(async (evolution) => {
+    const evolutionPromises = evolutions.map(async evolution => {
       const evolutionData = await cachedFetch(
         `https://pokeapi.co/api/v2/pokemon/${evolution}`
       )
@@ -76,11 +77,11 @@ async function handleSearchPokemonEvolution(name: string) {
         evolutionData.sprites?.other.dream_world.front_default,
         evolutionData.sprites?.other['official-artwork'].front_default,
         evolutionData.sprites?.other['home'].front_default,
-        evolutionData.sprites?.front_default,
+        evolutionData.sprites?.front_default
       ]
       return {
         name: evolution,
-        imgs: evolutionImages,
+        imgs: evolutionImages
       }
     })
 
@@ -92,14 +93,13 @@ async function handleSearchPokemonEvolution(name: string) {
 }
 
 export default function PokemonDetails() {
-  const {pokemonDetails} = useParams()
+  const { pokemonDetails } = useParams()
   const [pokemon, setPokemon] = useState<PokemonsProps>({} as PokemonsProps)
-  const [currentId, setCurrentId] = useState<number>() // ID inicial
+  const [currentId, setCurrentId] = useState<number>(0) // ID inicial
   const [isLoading, setIsLoading] = useState(false)
+  console.log('ID:', currentId)
 
-  const {}= useRouter()
   async function handleSearchPokemons(id: string) {
-    setCurrentId(Number(id))
     setIsLoading(true)
     try {
       const data = await cachedFetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
@@ -118,76 +118,84 @@ export default function PokemonDetails() {
         stats: data.stats,
         experience: data.base_experience,
         pokemonType: typesNames,
-        chainEvolutions: chainEvolution,
+        chainEvolutions: chainEvolution
       }
-      
-      setCurrentId(data.id);
+
+      setCurrentId(data.id)
       //setEvolutionIndex(0); // Resetar o índice de evolução
       setPokemon(pokemonData)
     } catch (error) {
       console.error('Failed to fetch Pokémon:', error)
     } finally {
       setIsLoading(false)
-      
     }
   }
 
   const handleNext = () => {
-    if ((currentId ?? 0) < 1010) { // Limite máximo de Pokémons
-      setCurrentId((prev) => (prev ?? 0) + 1)
+    if ((currentId ?? 0) < 1010) {
+      // Limite máximo de Pokémons
+      setCurrentId(prev => (prev ?? 0) + 1)
     }
   }
 
   const handlePrevious = () => {
-    if ((currentId ?? 0) > 1) { // Limite mínimo
-      setCurrentId((prev) => (prev ?? 0) - 1)
+    if ((currentId ?? 0) > 1) {
+      // Limite mínimo
+      setCurrentId(prev => (prev ?? 0) - 1)
     }
   }
 
   useEffect(() => {
-    handleSearchPokemons(pokemonDetails!.toString())
+    if (currentId === 0) handleSearchPokemons(pokemonDetails!.toString())
+    handleSearchPokemons(currentId.toString())
   }, [currentId])
 
   return (
-    <main className="flex flex-col items-start w-full">
-      <Details
-        onEvolutionClick={(name: string) => handleSearchPokemons(name)}
-        isLoading={isLoading}
-        key={pokemon.id}
-        id={pokemon.id}
-        image={pokemon.image}
-        secondImage={pokemon.secondImage}
-        name={pokemon.name}
-        evolutions={pokemon.chainEvolutions}
-        experience={pokemon.experience}
-        height={pokemon.height}
-        weight={pokemon.weight}
-        stats={pokemon.stats}
-        pokemonAbilities={pokemon.abilities}
-        pokemonType={pokemon.pokemonType}
-      />
-      <div className="flex items-center w-full max-w-4xl justify-between">
-        <button 
-          onClick={handlePrevious}
-          disabled={currentId === 1}
-          className={`btn ${currentId === 1 ? 'btn-disabled' : 'btn-primary'} 
+    <main className="flex gap-4 items-start w-full">
+      <MenuBar />
+
+      <section>
+        <Details
+          onEvolutionClick={(name: string) => handleSearchPokemons(name)}
+          isLoading={isLoading}
+          key={pokemon.id}
+          id={pokemon.id}
+          image={pokemon.image}
+          secondImage={pokemon.secondImage}
+          name={pokemon.name}
+          evolutions={pokemon.chainEvolutions}
+          experience={pokemon.experience}
+          height={pokemon.height}
+          weight={pokemon.weight}
+          stats={pokemon.stats}
+          pokemonAbilities={pokemon.abilities}
+          pokemonType={pokemon.pokemonType}
+        />
+        <div className="flex items-center w-full max-w-4xl justify-between">
+          <button
+            onClick={handlePrevious}
+            disabled={currentId === 1}
+            className={`btn ${currentId === 1 ? 'btn-disabled' : 'btn-primary'} 
           flex items-center gap-2 border p-1 rounded-full bg-gray-100 hover:bg-gray-200`}
-          title={pokemon.name}
-        >
-          <TbPlayerTrackPrev />
-          Previous
-        </button>
-        <button
-          onClick={handleNext}
-          disabled={currentId === 1010}
-          className={`btn ${currentId === 1010 ? 'btn-disabled' : 'btn-primary'} 
+            title={pokemon.name}
+          >
+            <TbPlayerTrackPrev />
+            Previous
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={currentId === 1010}
+            className={`btn ${
+              currentId === 1010 ? 'btn-disabled' : 'btn-primary'
+            } 
           flex items-center gap-2 border p-1 rounded-full bg-gray-100 hover:bg-gray-200`}
-          title={pokemon.name}
-        >
-          Next 
-          <TbPlayerTrackNext />
-        </button>
-      </div>
+            title={pokemon.name}
+          >
+            Next
+            <TbPlayerTrackNext />
+          </button>
+        </div>
+      </section>
     </main>
   )
 }

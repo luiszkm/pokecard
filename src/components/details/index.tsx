@@ -94,13 +94,13 @@ export function Details({
     </div>
   ) : (
     <div
-      className="w-full max-w-4xl h-cardDetails rounded-3xl relative  
+      className="w-full max-w-4xl md:h-cardDetails rounded-3xl relative  
       p-4 flex items-center justify-center "
       style={{
         background: `linear-gradient( ${bgColor}, ${bgcolor_secondary})`
       }}
     >
-      <div className="w-full flex bg-white h-full rounded-3xl ">
+      <div className="w-full flex flex-col md:flex-row bg-white h-full rounded-3xl ">
         <div className="w-full">
           <div className=" w-full flex items-center justify-between pr-1">
             <AvatarEvolution evolution={''} />
@@ -145,11 +145,11 @@ export function Details({
             </ul>
           </div>
         </div>
-        <div className="flex flex-col items-center justify-between py-4">
+        <div className="flex flex-col-reverse md:flex-col items-center justify-between py-4">
           <Ability abilities={pokemonAbilities} />
           <WeaknessesPokemonType types={pokemonType} />
         </div>
-        <div>
+        <div className='flex items-center md:flex-col justify-center gap-5'>
           {pokemonChainEvolution &&
             pokemonChainEvolution.map((item, index) => {
               return (
@@ -160,7 +160,7 @@ export function Details({
                 >
                   <span className="m-2">{item.name}</span>
                   <img
-                    className="animate-fade-right max-w-[200px] h-[200px] rounded-3xl"
+                    className="animate-fade-right max-w-[100px]  h-[100px] md:max-w-[200px]  md:h-[200px] rounded-3xl"
                     src={item.imgs[1]}
                     alt={item.name}
                   />

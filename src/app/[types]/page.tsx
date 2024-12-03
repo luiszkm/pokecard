@@ -5,6 +5,7 @@ import { Card } from '@/components/card';
 import { Pagination } from '@/components/Pagination';
 import { useParams } from 'next/navigation';
 import { PokemonData, Pokemontypes } from '@/@types/pokeapi';
+import { MenuBar } from '@/components/MenuBar';
 
 const paginate = 9 // Número de itens por página
 
@@ -28,6 +29,7 @@ export default function Types() {
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
 
   const fetchPokemonData = async (url: string): Promise<PokemonProps | null> => {
     try {
@@ -99,12 +101,14 @@ export default function Types() {
   
   useEffect(() => {
     fetchPokemonsByType();
-  }, [types]);
+  }, [types,search]);
 
   return (
-    <main className="flex flex-col items-center gap-3">
+    <main className="flex p-3">
       {error && <p className="text-red-500">{error}</p>}
-      <section className="grid gap-3 md:grid-cols-3">
+      <MenuBar />
+
+      <section className="grid gap-3 justify-center w-full max-w-5xl md:grid-cols-3 sm:grid-cols-2">
         {isLoading ? (
           <p>Loading...</p>
         ) : (
@@ -126,10 +130,11 @@ export default function Types() {
             />
           ))
         )}
-      </section>
-      {!isLoading && totalPages > 1 && (
+            {!isLoading && totalPages > 1 && (
         <Pagination pageLength={totalPages} onPageChange={handlePageChange} />
       )}
+      </section>
+  
     </main>
   );
 }

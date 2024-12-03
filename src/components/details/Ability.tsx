@@ -59,7 +59,7 @@ export function Ability({ abilities }: Abilities) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 p-2 ">
+    <div className="flex md:flex-wrap items-center gap-2 p-2 ">
       {ability &&
         ability.map((item, index) => {
           const uniqueAbility = ability.length === 1
@@ -67,7 +67,7 @@ export function Ability({ abilities }: Abilities) {
            (
             <div
               className="flex flex-col items-start p-4 border rounded-lg  
-              shadow animate-fade-down animate-once"
+              shadow animate-fade-down animate-once "
               key={index}
               title={item.short_effect}
             >
@@ -77,7 +77,7 @@ export function Ability({ abilities }: Abilities) {
                 {item.abilityName}:
               </strong>
               <p
-                className="text-sm font-normal h-fit
+                className="text-sm font-normal h-fit hidden
                   overflow-y-auto animate-fade-right animate-once
         [&::-webkit-scrollbar]:w-2
       [&::-webkit-scrollbar-track]:bg-gray-100
@@ -91,7 +91,7 @@ export function Ability({ abilities }: Abilities) {
             </div>
           ) : (
             <div
-              className="flex flex-col items-start p-2 border rounded-lg w-full
+              className="flex flex-col items-start p-2 border rounded-lg w-full 
               shadow animate-fade-down animate-once"
               key={index}
               title={item.short_effect}
@@ -102,7 +102,7 @@ export function Ability({ abilities }: Abilities) {
                 {item.abilityName}:
               </strong>
               <p
-                className="text-sm font-normal h-28
+                className="text-sm font-normal h-28 hidden md:flex
         overflow-y-auto animate-fade-right animate-once
         [&::-webkit-scrollbar]:w-2
       [&::-webkit-scrollbar-track]:bg-gray-100

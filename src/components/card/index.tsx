@@ -86,7 +86,7 @@ export function Card({
  
     </div>
   ) : (
-    <a className=' rounded-full hover:shadow-lg  hover:scale-105
+    <a className='rounded-full max-w-xs hover:shadow-lg  hover:scale-105
          '
      href={`/pokemon/${id}`}>   
      <div

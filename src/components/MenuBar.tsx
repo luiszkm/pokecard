@@ -24,7 +24,7 @@ export function MenuBar() {
   }
 
   return (
-    <aside className="h-fit w-72 animate-shake animate-once" >
+    <aside className="h-fit w-72 animate-shake animate-once hidden lg:flex">
       <nav>
         <form
           onSubmit={e => handleSearchPokemons(e)}
@@ -53,9 +53,17 @@ export function MenuBar() {
             </div>
           </label>
         </form>
+        <a
+          className="flex items-center justify-between j gap-4 w-full text-md  p-4"
+          href="/"
+        >
+          <PokeBallIcon /> 
+          <strong>Home</strong>
+          <span></span>
+        </a>
         <button
           onClick={() => handleOpenMenu(isHidden)}
-          className="flex items-center justify-between gap-4 w-full h-full p-4"
+          className="flex items-center justify-between gap-4 w-full text-md font-bold  p-4"
         >
           <PokeBallIcon />
           Atributos
@@ -76,7 +84,6 @@ export function MenuBar() {
           {!isHidden &&
             pokemonsTypes.map((item, index) => (
               <li
-              
                 className="border-b-2 w-full 
                 border-dark hover:bg-gray-200 hover:text-white transition duration-300 ease-in-out
               "

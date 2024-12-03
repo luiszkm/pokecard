@@ -25,10 +25,7 @@ export default function RootLayout({
           height={400}
            alt="pokeball" />
         </header>
-        <div className='flex items-start gap-8' >
-          <MenuBar />
           {children}
-        </div>
         <footer></footer>
       </body>
     </html>

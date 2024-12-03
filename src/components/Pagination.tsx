@@ -40,7 +40,7 @@ export function Pagination({ onPageChange, pageLength }: PaginationProps) {
   }, [currentPage])
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 ">
       <div
         className="w-5 h-5 rounded-full border border-black 
        from-white via-white to-fire bg-gradient-to-t
