@@ -95,7 +95,7 @@ async function handleSearchPokemonEvolution(name: string) {
 export default function PokemonDetails() {
   const { pokemonDetails } = useParams()
   const [pokemon, setPokemon] = useState<PokemonsProps>({} as PokemonsProps)
-  const [currentId, setCurrentId] = useState<number>(0) // ID inicial
+  const [currentId, setCurrentId] = useState<string>(pokemonDetails!.toString()) // ID inicial
   const [isLoading, setIsLoading] = useState(false)
 
   async function handleSearchPokemons(id: string) {
@@ -130,21 +130,22 @@ export default function PokemonDetails() {
   }
 
   const handleNext = () => {
-    if ((currentId ?? 0) < 1010) {
+    if ((Number(currentId) ?? 0) < 1010) {
       // Limite máximo de Pokémons
-      setCurrentId(prev => (prev ?? 0) + 1)
+      setCurrentId(prev => (Number(prev) + 1).toString())
     }
   }
 
   const handlePrevious = () => {
-    if ((currentId ?? 0) > 1) {
+    if ((Number(currentId) ?? 0) > 1) {
       // Limite mínimo
-      setCurrentId(prev => (prev ?? 0) - 1)
+      setCurrentId(prev => (Number(prev) - 1).toString())
     }
   }
 
   useEffect(() => {
-    if (currentId === 0) handleSearchPokemons(pokemonDetails!.toString())
+    console.log(isLoading)
+    if (isLoading) handleSearchPokemons(pokemonDetails!.toString())
     handleSearchPokemons(currentId.toString())
   }, [currentId])
 
@@ -172,8 +173,8 @@ export default function PokemonDetails() {
         <div className="flex items-center w-full max-w-4xl justify-between">
           <button
             onClick={handlePrevious}
-            disabled={currentId === 1}
-            className={`btn ${currentId === 1 ? 'btn-disabled' : 'btn-primary'} 
+            disabled={Number(currentId) === 1}
+            className={`btn ${Number(currentId) === 1 ? 'btn-disabled' : 'btn-primary'} 
           flex items-center gap-2 border p-1 rounded-full bg-gray-100 hover:bg-gray-200`}
             title={pokemon.name}
           >
@@ -182,9 +183,9 @@ export default function PokemonDetails() {
           </button>
           <button
             onClick={handleNext}
-            disabled={currentId === 1010}
+            disabled={Number(currentId) === 1010}
             className={`btn ${
-              currentId === 1010 ? 'btn-disabled' : 'btn-primary'
+              Number(currentId) === 1010 ? 'btn-disabled' : 'btn-primary'
             } 
           flex items-center gap-2 border p-1 rounded-full bg-gray-100 hover:bg-gray-200`}
             title={pokemon.name}
