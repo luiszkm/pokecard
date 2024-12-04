@@ -97,7 +97,6 @@ export default function PokemonDetails() {
   const [pokemon, setPokemon] = useState<PokemonsProps>({} as PokemonsProps)
   const [currentId, setCurrentId] = useState<number>(0) // ID inicial
   const [isLoading, setIsLoading] = useState(false)
-  console.log('ID:', currentId)
 
   async function handleSearchPokemons(id: string) {
     setIsLoading(true)
@@ -122,7 +121,6 @@ export default function PokemonDetails() {
       }
 
       setCurrentId(data.id)
-      //setEvolutionIndex(0); // Resetar o índice de evolução
       setPokemon(pokemonData)
     } catch (error) {
       console.error('Failed to fetch Pokémon:', error)

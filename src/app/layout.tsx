@@ -20,12 +20,17 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <header className="w-full bg-black h-64 flex items-center justify-center">
-          <Image src="/images/pikaso_reimagine_plain-blank-A-red-and-white-spherical-Pokeball-wit.png"
-          width={400}
-          height={400}
-           alt="pokeball" />
+          <div className="animate-fade-right animate-once animate-ease-linear">
+            <Image
+              className="animate-spin animate-once animate-duration-1000 animate-ease-in animate-delay-2000 "
+              src="/images/pikaso_reimagine_plain-blank-A-red-and-white-spherical-Pokeball-wit.png"
+              width={400}
+              height={400}
+              alt="pokeball"
+            />
+          </div>
         </header>
-          {children}
+        {children}
         <footer></footer>
       </body>
     </html>

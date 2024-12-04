@@ -108,7 +108,8 @@ export default function Types() {
       {error && <p className="text-red-500">{error}</p>}
       <MenuBar />
 
-      <section className="grid gap-3 justify-center w-full max-w-5xl md:grid-cols-3 sm:grid-cols-2">
+      <section className='flex flex-col gap-5 items-center'>
+        <div  className="grid gap-3 justify-center w-full max-w-5xl md:grid-cols-3 sm:grid-cols-2">
         {isLoading ? (
           <p>Loading...</p>
         ) : (
@@ -130,11 +131,14 @@ export default function Types() {
             />
           ))
         )}
-            {!isLoading && totalPages > 1 && (
+          
+        </div>
+        {!isLoading && totalPages > 1 && (
         <Pagination pageLength={totalPages} onPageChange={handlePageChange} />
       )}
+        
       </section>
-  
+        
     </main>
   );
 }
